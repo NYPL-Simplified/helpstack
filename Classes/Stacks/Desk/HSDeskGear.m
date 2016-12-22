@@ -314,10 +314,10 @@
                     [kbItem setTitle:[topic objectForKey:@"name"]]; //name of topic
                     [kbItem setApiLinks:[topic objectForKey:@"_links"]]; //links to fetch other objects
 
-                  if ([kbItem.title isEqualToString:@"SimplyE"])
-                  {
+//                   if ([kbItem.title isEqualToString:@"SimplyE"])
+//                   {
                     [topicsToShow addObject:kbItem];
-                  }
+//                   }
                 }
 
                 success(topicsToShow);
