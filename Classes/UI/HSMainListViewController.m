@@ -172,11 +172,11 @@ BOOL finishedLoadingTickets = NO;
 {
     // Return the number of sections.
     
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+//    if (tableView == self.searchDisplayController.searchResultsTableView) {
         return 1;
-    }else{
-        return 2+([self.ticketSource ticketCount]!=0);
-    }
+//    }else{
+//        return 2+([self.ticketSource ticketCount]!=0);
+//    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -298,11 +298,11 @@ BOOL finishedLoadingTickets = NO;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
 
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+//    if (tableView == self.searchDisplayController.searchResultsTableView) {
         return 0.0;
-    }
-
-    return 30.0;
+//    }
+//
+//    return 30.0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
