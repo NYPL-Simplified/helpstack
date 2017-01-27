@@ -35,7 +35,8 @@
 @property (nonatomic, strong) NSString* toHelpEmail;
 @property (nonatomic, strong) NSString* staffLoginEmail;
 @property (nonatomic, strong) NSString* staffLoginPassword;
+@property (nonatomic, strong) NSString* brandID;
 
-- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password;
+- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password andBrand:(NSString*)brandID;
 
 @end

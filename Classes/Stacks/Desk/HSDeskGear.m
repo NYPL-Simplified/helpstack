@@ -33,7 +33,7 @@
 
 @implementation HSDeskGear
 
-- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password
+- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password andBrand:(NSString*)brandID
 {
     if (self = [super init]) {
         
@@ -41,6 +41,7 @@
         self.toHelpEmail = helpEmail;
         self.staffLoginEmail = loginEmail;
         self.staffLoginPassword = password;
+        self.brandID = brandID;
         
         
         NSURL* baseURL = [[NSURL alloc] initWithString:instanceBaseURL];
@@ -292,7 +293,14 @@
     if (!section) {
 
         // GET ALL SUPPORT CENTER TOPICS
-        [self.networkManager GET:@"/api/v2/topics" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+      
+      NSString *topicsApi = @"/api/v2/topics";
+      if (self.brandID)
+      {
+        topicsApi = [NSString stringWithFormat:@"/api/v2/brands/%@/topics",self.brandID];
+      }
+      
+        [self.networkManager GET:topicsApi parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSDictionary* response = (NSDictionary*)responseObject;
             NSNumber* numOfTopics = [response objectForKey:@"total_entries"];
 
