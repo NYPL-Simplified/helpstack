@@ -33,7 +33,13 @@
 
 @implementation HSDeskGear
 
-- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password
+///------------------------------------------------------------
+/// initWithInstanceBaseUrl
+///------------------------------------------------------------
+/**
+// Gain access to Desk account with username and password
+*/
+- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password andBrand:(NSString*)brandID
 {
     if (self = [super init]) {
         
@@ -41,6 +47,7 @@
         self.toHelpEmail = helpEmail;
         self.staffLoginEmail = loginEmail;
         self.staffLoginPassword = password;
+        self.brandID = brandID;
         
         
         NSURL* baseURL = [[NSURL alloc] initWithString:instanceBaseURL];
@@ -59,6 +66,37 @@
     return self;
 }
 
+
+///------------------------------------------------------------
+/// initWithInstanceBaseUrl
+///------------------------------------------------------------
+/**
+ // Gain access to Desk account with bearer token and brand ID
+ */
+- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL token:(NSString*)token andBrand:(NSString*)brandID
+{
+    if (self = [super init]) {
+        
+        self.instanceBaseURL = instanceBaseURL;
+        self.brandID = brandID;
+        
+        
+        NSURL* baseURL = [[NSURL alloc] initWithString:instanceBaseURL];
+        AFHTTPRequestOperationManager* operationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
+        
+        [operationManager setRequestSerializer:[AFJSONRequestSerializer serializer]];
+        [operationManager.requestSerializer  setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
+        [operationManager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+        [operationManager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        self.networkManager = operationManager;
+        
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+        
+    }
+    return self;
+}
+    
 ///------------------------------------------
 /// @name Create a ticket
 ///-------------------------------------------
@@ -292,7 +330,14 @@
     if (!section) {
 
         // GET ALL SUPPORT CENTER TOPICS
-        [self.networkManager GET:@"/api/v2/topics" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+      
+      NSString *topicsApi = @"/api/v2/topics";
+      if (self.brandID)
+      {
+        topicsApi = [NSString stringWithFormat:@"/api/v2/brands/%@/topics",self.brandID];
+      }
+      
+        [self.networkManager GET:topicsApi parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSDictionary* response = (NSDictionary*)responseObject;
             NSNumber* numOfTopics = [response objectForKey:@"total_entries"];
 
