@@ -33,6 +33,12 @@
 
 @implementation HSDeskGear
 
+///------------------------------------------------------------
+/// initWithInstanceBaseUrl
+///------------------------------------------------------------
+/**
+// Gain access to Desk account with username and password
+*/
 - (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password andBrand:(NSString*)brandID
 {
     if (self = [super init]) {
@@ -60,6 +66,37 @@
     return self;
 }
 
+
+///------------------------------------------------------------
+/// initWithInstanceBaseUrl
+///------------------------------------------------------------
+/**
+ // Gain access to Desk account with bearer token and brand ID
+ */
+- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL token:(NSString*)token andBrand:(NSString*)brandID
+{
+    if (self = [super init]) {
+        
+        self.instanceBaseURL = instanceBaseURL;
+        self.brandID = brandID;
+        
+        
+        NSURL* baseURL = [[NSURL alloc] initWithString:instanceBaseURL];
+        AFHTTPRequestOperationManager* operationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
+        
+        [operationManager setRequestSerializer:[AFJSONRequestSerializer serializer]];
+        [operationManager.requestSerializer  setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
+        [operationManager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+        [operationManager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        self.networkManager = operationManager;
+        
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+        
+    }
+    return self;
+}
+    
 ///------------------------------------------
 /// @name Create a ticket
 ///-------------------------------------------
