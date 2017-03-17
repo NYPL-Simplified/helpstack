@@ -39,4 +39,6 @@
 
 - (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL toHelpEmail:(NSString*)helpEmail staffLoginEmail:(NSString*)loginEmail AndStaffLoginPassword:(NSString*)password andBrand:(NSString*)brandID;
 
+- (instancetype)initWithInstanceBaseUrl:(NSString*)instanceBaseURL token:(NSString*)token andBrand:(NSString*)brandID;
+
 @end
