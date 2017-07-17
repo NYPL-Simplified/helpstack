@@ -100,7 +100,7 @@ BOOL finishedLoadingTickets = NO;
         finishedLoadingKB = YES;
         [self onKBorTicketsFetched];
 
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Couldnt load articles" message:@"Error in loading articles. Please check your internet connection." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Couldn't Load Article" message:@"There was an error loading this article. Please check your internet connection." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alertView show];
     }];
 }
@@ -119,7 +119,7 @@ BOOL finishedLoadingTickets = NO;
         finishedLoadingTickets = YES;
         [self onKBorTicketsFetched];
 
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error loading the previous issues." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error loading the previous issues." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alertView show];
 
     }];
@@ -452,7 +452,7 @@ BOOL finishedLoadingTickets = NO;
     } failure:^(NSError* e){
         [self stopLoadingAnimation];
         
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error in reporting your issue. Is your internet ON? Can you try after sometime?" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error in reporting your issue. Is your internet ON? Can you try after sometime?" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         
         [alertView show];
     }];
@@ -472,7 +472,7 @@ BOOL finishedLoadingTickets = NO;
     } failure:^(NSError *error) {
         [self stopLoadingAnimation];
         
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error registering you. Can you try some other email address?" delegate:self cancelButtonTitle:@"No, Leave it." otherButtonTitles:@"Ok", nil];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error registering you. Can you try some other email address?" delegate:self cancelButtonTitle:@"No, Leave it." otherButtonTitles:@"OK", nil];
         
         alertView.tag = 20;
         [alertView show]; 
@@ -507,7 +507,7 @@ BOOL finishedLoadingTickets = NO;
     [self dismissViewControllerAnimated:YES completion:nil];
     
     if (result == MFMailComposeResultSent) {
-        UIAlertView* mailSentAlert = [[UIAlertView alloc] initWithTitle:@"Mail sent." message:@"Thanks for contacting me. Will reply asap." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView* mailSentAlert = [[UIAlertView alloc] initWithTitle:@"Mail sent." message:@"Thanks for contacting me. Will reply asap." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [mailSentAlert show];
     }
     

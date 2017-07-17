@@ -517,7 +517,7 @@ NSInteger attachmentButtonTagOffset = 1000;
         [self.loadingIndicator stopAnimating];
         self.loadingIndicator.hidden = YES;
         [self addMessageView];
-        UIAlertView* errorAlert = [[UIAlertView alloc] initWithTitle:@"Couldnt get replies" message:@"There was some error loading the replies. Please check if your internet connection is ON." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView* errorAlert = [[UIAlertView alloc] initWithTitle:@"Couldnt get replies" message:@"There was some error loading the replies. Please check if your internet connection is ON." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [errorAlert show];
     }];
 }
@@ -559,7 +559,7 @@ NSInteger attachmentButtonTagOffset = 1000;
     self.sendReplyIndicator.hidden = YES;
     self.sendButton.hidden = NO;
     [self removeInsetsOnChatTable];
-    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error in sending your reply. Is your internet ON? Can you try after sometime?" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error in sending your reply. Is your internet ON? Can you try after sometime?" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alertView show];
 }
 
