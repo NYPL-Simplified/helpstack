@@ -47,7 +47,7 @@
     [self.kbSource prepareKB:^{
         [self.tableView reloadData];
     } failure:^(NSError* e){
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Couldnt load articles" message:@"Error in loading articles. Please check your internet connection." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Couldn't Load Article" message:@"There was an error loading this article. Please check your internet connection." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alertView show];
 
     }];
