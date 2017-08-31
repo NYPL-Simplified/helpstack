@@ -69,20 +69,20 @@
 }
 
 - (void)showHelp:(UIViewController*)parentController completion:(void (^)(void))completion {
-    
-    UIViewController* mainController;
-    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard-iPad" bundle:[NSBundle mainBundle]];
-        mainController = [helpStoryboard instantiateInitialViewController];
-        [mainController setModalPresentationStyle:UIModalPresentationFormSheet];
-        [parentController presentViewController:mainController animated:YES completion:completion];
-        
-    }
-    else {
-        UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
-        mainController = [helpStoryboard instantiateInitialViewController];
-        [parentController presentViewController:mainController animated:YES completion:completion];
-    }
+  
+  UIViewController* mainController;
+  if(parentController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+    UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard-iPad" bundle:[NSBundle mainBundle]];
+    mainController = [helpStoryboard instantiateInitialViewController];
+    [mainController setModalPresentationStyle:UIModalPresentationFormSheet];
+    [parentController presentViewController:mainController animated:YES completion:completion];
+
+  }
+  else {
+    UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
+    mainController = [helpStoryboard instantiateInitialViewController];
+    [parentController presentViewController:mainController animated:YES completion:completion];
+  }
 }
 
 

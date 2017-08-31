@@ -270,7 +270,7 @@ NSInteger attachmentButtonTagOffset = 1000;
                                 @"Change",
                                 @"Delete",
                                 nil];
-        if ([HSAppearance isIPad]) {
+        if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
             [popup showFromRect:[self.addAttachmentButton bounds] inView:self.addAttachmentButton animated:YES];
         }
         else {

@@ -215,7 +215,7 @@
         
         attachmentImageBtn = (UIButton *) [cell viewWithTag:2];
         [attachmentImageBtn addTarget:self action:@selector(handleAttachment) forControlEvents:UIControlEventTouchUpInside];
-        if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
             [subjectField becomeFirstResponder];
         }
         
@@ -241,7 +241,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if([HSAppearance isIPad]){
+    if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
         //For iPad
         if(indexPath.row == 0){
             return 44.0;
@@ -334,7 +334,7 @@
                                 @"Change",
                                 @"Delete",
                                 nil];
-        if ([HSAppearance isIPad]) {
+        if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
             [popup showFromRect:[attachmentImageBtn bounds] inView:attachmentImageBtn animated:YES];
         }
         else {
