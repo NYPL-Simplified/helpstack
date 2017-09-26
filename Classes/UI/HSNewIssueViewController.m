@@ -352,7 +352,7 @@
         HSAttachment *attachment = [self.attachments objectAtIndex:0];
         [attachmentImageBtn setImage:attachment.attachmentImage forState:UIControlStateNormal];
     } else {
-        UIImage *attachImage = [UIImage imageNamed:@"attach.png"];
+        UIImage *attachImage = [UIImage imageNamed:@"AttachIcon"];
         [attachmentImageBtn setImage:attachImage forState:UIControlStateNormal];
     }
 }

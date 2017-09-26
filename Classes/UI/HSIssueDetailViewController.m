@@ -252,7 +252,7 @@ NSInteger attachmentButtonTagOffset = 1000;
     if(self.attachments.count == 0){
         self.messageText.internalTextView.inputAccessoryView = nil;
         [self.messageText.internalTextView reloadInputViews];
-        UIImage *attachImage = [UIImage imageNamed:@"attach.png"];
+        UIImage *attachImage = [UIImage imageNamed:@"AttachIcon"];
         [self.addAttachmentButton setImage:attachImage forState:UIControlStateNormal];
     }else{
         HSAttachment *attachment = [self.attachments objectAtIndex:0];
@@ -692,7 +692,7 @@ NSInteger attachmentButtonTagOffset = 1000;
     
     if(updateToShow.attachments != nil && updateToShow.attachments.count > 0){
         UIButton *attachmentBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30.0, 25.0)];
-        UIImage *btnImage = [UIImage imageNamed:@"attach.png"];
+        UIImage *btnImage = [UIImage imageNamed:@"AttachIcon"];
         [attachmentBtn setBackgroundImage:btnImage forState:UIControlStateNormal];
         [attachmentBtn setTag:attachmentButtonTagOffset+indexPath.section];
         [attachmentBtn addTarget:self action:@selector(openAttachment:) forControlEvents:UIControlEventTouchUpInside];
