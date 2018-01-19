@@ -22,13 +22,9 @@
 
 #import "HSMainListViewController.h"
 #import "HSArticleDetailViewController.h"
-#import "HSNewIssueViewController.h"
-#import "HSUserDetailsViewController.h"
 #import "HSGroupViewController.h"
 #import "HSHelpStack.h"
 #import "HSNewTicket.h"
-#import "HSIssueDetailViewController.h"
-#import "HSTicketDetailViewControlleriPad.h"
 #import "HSKBSource.h"
 #import "HSTicketSource.h"
 #import "HSAppearance.h"
@@ -38,7 +34,6 @@
 #import "HSTableViewHeaderCell.h"
 #import <MessageUI/MessageUI.h>
 #import "HSActivityIndicatorView.h"
-#import "HSReportIssueCell.h"
 #import "HSTableFooterCreditsView.h"
 #import "HSUtility.h"
 
@@ -47,7 +42,7 @@
  ->If ticketDelegate is not set, default email client is open and mail is prepared using given companyEmailAddress.
  */
 
-@interface HSMainListViewController () <HSNewIssueViewControllerDelegate, MFMailComposeViewControllerDelegate> {
+@interface HSMainListViewController () <MFMailComposeViewControllerDelegate> {
     UINavigationController* newTicketNavController;
 }
 
@@ -170,35 +165,15 @@ BOOL finishedLoadingTickets = NO;
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
-    
-//    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        return 1;
-//    }else{
-//        return 2+([self.ticketSource ticketCount]!=0);
-//    }
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         return [self.kbSource kbCount:HAGearTableTypeSearch];
-    }else{
-        if (section == 0) {
-            return [self.kbSource kbCount:HAGearTableTypeDefault];
-        }
-        else if (section == 1){
-            if([self.ticketSource ticketCount] != 0){
-                return [self.ticketSource ticketCount];
-            }else{
-                return 1;
-            }
-        }
-        else {
-            return 1;
-        }
+    } else {
+        return [self.kbSource kbCount:HAGearTableTypeDefault];
     }
 }
 
@@ -223,41 +198,20 @@ BOOL finishedLoadingTickets = NO;
     } else {
         
         static NSString *CellIdentifier = @"HelpCell";
-        static NSString *ReportCellIdentifier = @"RepostIssueCell";
-        if (indexPath.section == 2 || (indexPath.section == 1 && ([self.ticketSource ticketCount] == 0))) {
-            HSReportIssueCell *cell = [tableView dequeueReusableCellWithIdentifier:ReportCellIdentifier];
-            if (cell == nil) {
-                cell = [[HSReportIssueCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ReportCellIdentifier];
-            }
-            
-            cell.textLabel.text = @"Report an issue";
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-            
-            return cell;
-        }
-        else {
-            
-            HSTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-            if (cell == nil) {
-                cell = [[HSTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-            }
-            cell.textLabel.textAlignment = NSTextAlignmentLeft;
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-            
-            if (indexPath.section == 1 && ([self.ticketSource ticketCount] > 0)){
-                HSTicket* ticket = [self.ticketSource ticketAtPosition:indexPath.row];
-                cell.textLabel.text = ticket.subject;
-            } else if (indexPath.section == 0) {
-                HSKBItem* article = [self.kbSource table:HAGearTableTypeDefault kbAtPosition:indexPath.row];
-                cell.textLabel.text = article.title;
-            }
 
-            return cell;
+        HSTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            cell = [[HSTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         }
-        return nil;
+        cell.textLabel.textAlignment = NSTextAlignmentLeft;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+
+        HSKBItem* article = [self.kbSource table:HAGearTableTypeDefault kbAtPosition:indexPath.row];
+        cell.textLabel.text = article.title;
+
+        return cell;
     }
-    
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
@@ -270,65 +224,14 @@ BOOL finishedLoadingTickets = NO;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        [self table:HAGearTableTypeSearch articleSelectedAtIndexPath:indexPath.row];
-        
+      [self table:HAGearTableTypeSearch articleSelectedAtIndexPath:indexPath.row];
     } else {
-        if (indexPath.section == 0) {
-            [self table:HAGearTableTypeDefault articleSelectedAtIndexPath:indexPath.row];
-        } else if(indexPath.section == 1){
-            if([self.ticketSource ticketCount] > 0){
-                HSTicket* ticket = [self.ticketSource ticketAtPosition:indexPath.row];
-                [self performSegueWithIdentifier:@"MyIssueDetail" sender:ticket];
-            }else{
-                [self reportIssue];
-            }
-        } else {
-            [self reportIssue];
-        }
+      [self table:HAGearTableTypeDefault articleSelectedAtIndexPath:indexPath.row];
     }
-    
+
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 0;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-
-//    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        return 0.0;
-//    }
-//
-//    return 30.0;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        return nil;
-    }
-
-
-    HSTableViewHeaderCell* cell = nil;
-    CGRect tableRect = CGRectMake(0, 0, self.tableView.frame.size.width, 30.0);
-    if(section == 0){
-        cell = [[HSTableViewHeaderCell alloc] initWithFrame:tableRect];
-        cell.titleLabel.text = @"FAQ";
-    } else if(section == 1 && [self.ticketSource ticketCount] != 0){
-        cell = [[HSTableViewHeaderCell alloc] initWithFrame:tableRect];
-        cell.titleLabel.text = @"ISSUES";
-    }
-    else {
-        return nil;
-    }
-
-    return cell;
-}
-
-
 
 - (void)table:(HAGearTableType)table articleSelectedAtIndexPath:(NSInteger) position
 {
@@ -351,55 +254,9 @@ BOOL finishedLoadingTickets = NO;
     }
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([[segue identifier] isEqualToString:@"ReportIssue"]) {
-        HSNewIssueViewController* reportViewController = (HSNewIssueViewController*) [segue destinationViewController];
-        reportViewController.delegate = self;
-        reportViewController.ticketSource = self.ticketSource;
-    }
-    else if ([[segue identifier] isEqualToString:@"MyIssueDetail"]) {
-        HSIssueDetailViewController* viewController = (HSIssueDetailViewController*)segue.destinationViewController;
-        viewController.selectedTicket = sender;
-        viewController.ticketSource = self.ticketSource;
-    }
-}
-
-- (void)reportIssue{
-    if([self.ticketSource isTicketProtocolImplemented]) {
-        [self startReportAnIssue];
-    }
-    else {
-        [self startMailClient];
-    }
-}
-
-- (void) startReportAnIssue {
-    HSNewTicket* ticket = [[HSNewTicket alloc] init];
-    UIBarButtonItem* cancelItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(newTicketCancelPressed:)];
-    
-    
-    HSNewIssueViewController* controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HSReportIssue"];
-    controller.createNewTicket = ticket;
-    controller.delegate = self;
-    controller.ticketSource = self.ticketSource;
-    controller.navigationItem.leftBarButtonItem = cancelItem;
-    newTicketNavController = [[UINavigationController alloc] initWithNavigationBarClass:[UINavigationBar class] toolbarClass:[UIToolbar class]];
-    newTicketNavController.viewControllers = [NSArray arrayWithObject:controller];
-    newTicketNavController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    
-    [self presentViewController:newTicketNavController animated:YES completion:nil];
-}
-
-
 - (IBAction)cancelPressed:(UIBarButtonItem *)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)newTicketCancelPressed:(id)sender
-{
-    [newTicketNavController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
@@ -408,74 +265,12 @@ BOOL finishedLoadingTickets = NO;
     return NO;
 }
 
-- (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView
-{
-    UIView* footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100)];
-
-    UIButton* reportIssueButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 5, footerView.frame.size.width, 30)];
-    [reportIssueButton setTitle:@"Report An Issue" forState:UIControlStateNormal];
-    [reportIssueButton setTitleColor:[UIColor colorWithRed:233.0/255.0f green:76.0/255.0f blue:67.0/255.0f alpha:1.0] forState:UIControlStateNormal];
-    [reportIssueButton setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
-    [[reportIssueButton titleLabel] setFont:[UIFont boldSystemFontOfSize:14]];
-    [reportIssueButton addTarget:self action:@selector(reportIssueFromSearch) forControlEvents:UIControlEventTouchUpInside];
-    [footerView addSubview:reportIssueButton];
-
-    tableView.tableFooterView = footerView;
-}
-
-- (void)reportIssueFromSearch {
-    //dismiss search
-    [self.searchDisplayController setActive:NO animated:NO];
-    [self reportIssue];
-}
-
 - (void)filterArticlesforSearchString:(NSString*)string
 {
     [self.kbSource filterKBforSearchString:string success:^{
         [self.searchDisplayController.searchResultsTableView reloadData];
     } failure:^(NSError* e){
-        
-    }];
-}
 
-#pragma mark - HSNewIssueViewControllerDelegate
-
-- (void)onNewIssueRequested:(HSNewTicket *)createNewTicket
-{
-    [self startLoadingAnimation];
-    
-    [self.ticketSource createNewTicket:createNewTicket success:^{
-        
-        [self reloadTicketsSection];
-        [self stopLoadingAnimation];
-        
-    } failure:^(NSError* e){
-        [self stopLoadingAnimation];
-        
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error in reporting your issue. Is your internet ON? Can you try after sometime?" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        
-        [alertView show];
-    }];
-
-}
-
-- (void)registerUserAndCreateTicket:(HSNewTicket *)createNewTicket forUserFirstName:(NSString *)firstName lastName:(NSString *)lastName email:(NSString *)email {
-    
-    [self startLoadingAnimation];
-    
-    [self.ticketSource registerUserWithFirstName:firstName lastName:lastName email:email success:^ {
-        
-        [self stopLoadingAnimation];
-        [self onNewIssueRequested:createNewTicket];
-        
-        
-    } failure:^(NSError *error) {
-        [self stopLoadingAnimation];
-        
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Oops! Some error." message:@"There was some error registering you. Can you try some other email address?" delegate:self cancelButtonTitle:@"No, Leave it." otherButtonTitles:@"OK", nil];
-        
-        alertView.tag = 20;
-        [alertView show]; 
     }];
 }
 
