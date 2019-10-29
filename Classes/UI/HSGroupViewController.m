@@ -27,6 +27,8 @@
 
 @interface HSGroupViewController ()
 
+@property(nonatomic, strong) UISearchController *searchController;
+
 @end
 
 @implementation HSGroupViewController
@@ -58,6 +60,16 @@
 
     /* This dummy footer view is added to the table view to remove the separator lines between empty cells */
     self.tableView.tableFooterView = [UIView new];
+
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.definesPresentationContext = NO;
+    self.searchController.hidesNavigationBarDuringPresentation = YES;
+    self.searchController.searchBar.delegate = self;
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    self.definesPresentationContext = YES;
+    [self.searchController.searchBar sizeToFit];
 }
 
 - (void)didReceiveMemoryWarning
@@ -70,7 +82,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchController.isActive) {
         return 1;
     }else{
         return 1;
@@ -80,16 +92,16 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchController.isActive) {
         return [self.kbSource kbCount:HAGearTableTypeSearch];
-    }else{
+    } else {
         return [self.kbSource kbCount:HAGearTableTypeDefault];
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchController.isActive) {
         
         static NSString* resultCellId = @"Cell";
         HSTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:resultCellId];
@@ -122,8 +134,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchController.isActive) {
         [self table:HAGearTableTypeSearch articleSelectedAtIndexPath:indexPath.row];
         
     }else{
@@ -150,19 +161,14 @@
     
 }
 
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+#pragma mark - UISearchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    [self filterArticlesforSearchString:searchString];
-    return NO;
-}
-
-- (void)filterArticlesforSearchString:(NSString*)string
-{
-    [self.kbSource filterKBforSearchString:string success:^{
-        [self.searchDisplayController.searchResultsTableView reloadData];
-    } failure:^(NSError* e){
-        
-    }];
+  NSString *string = [[searchController searchBar] text];
+  [self.kbSource filterKBforSearchString:string success:^{
+    [self.tableView reloadData];
+  } failure:^(NSError* e){
+  }];
 }
 
 @end

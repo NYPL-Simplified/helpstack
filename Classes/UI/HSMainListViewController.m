@@ -47,6 +47,7 @@
 }
 
 @property(nonatomic, strong) HSActivityIndicatorView *loadingView;
+@property(nonatomic, strong) UISearchController *searchController;
 
 @end
 
@@ -75,6 +76,16 @@ BOOL finishedLoadingTickets = NO;
     [self refreshMyIssue];
     
     [self addCreditsToTable];
+
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.definesPresentationContext = NO;
+    self.searchController.hidesNavigationBarDuringPresentation = YES;
+    self.searchController.searchBar.delegate = self;
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    self.definesPresentationContext = YES;
+    [self.searchController.searchBar sizeToFit];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -170,7 +181,7 @@ BOOL finishedLoadingTickets = NO;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchController.active) {
         return [self.kbSource kbCount:HAGearTableTypeSearch];
     } else {
         return [self.kbSource kbCount:HAGearTableTypeDefault];
@@ -179,7 +190,7 @@ BOOL finishedLoadingTickets = NO;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchController.active) {
         
         static NSString *CellIdentifier = @"Cell";
         
@@ -218,13 +229,11 @@ BOOL finishedLoadingTickets = NO;
     scrollView.scrollEnabled = true;
 }
 
-
-
 #pragma mark - TableView Delegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchController.isActive) {
       [self table:HAGearTableTypeSearch articleSelectedAtIndexPath:indexPath.row];
     } else {
       [self table:HAGearTableTypeDefault articleSelectedAtIndexPath:indexPath.row];
@@ -259,19 +268,14 @@ BOOL finishedLoadingTickets = NO;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+#pragma mark - UISearchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    [self filterArticlesforSearchString:searchString];
-    return NO;
-}
-
-- (void)filterArticlesforSearchString:(NSString*)string
-{
-    [self.kbSource filterKBforSearchString:string success:^{
-        [self.searchDisplayController.searchResultsTableView reloadData];
-    } failure:^(NSError* e){
-
-    }];
+  NSString *string = [[searchController searchBar] text];
+  [self.kbSource filterKBforSearchString:string success:^{
+    [self.tableView reloadData];
+  } failure:^(NSError* e){
+  }];
 }
 
 #pragma mark - MailClient
