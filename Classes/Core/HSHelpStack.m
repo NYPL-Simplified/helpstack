@@ -81,6 +81,7 @@
   else {
     UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle bundleForClass:[self classForCoder]]];
     mainController = [helpStoryboard instantiateInitialViewController];
+    [mainController setModalPresentationStyle:UIModalPresentationFullScreen];
     [parentController presentViewController:mainController animated:YES completion:completion];
   }
 }
